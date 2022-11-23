@@ -4,13 +4,12 @@ import numpy as np
 
 
 class DichotomyStrategy(Strategy):
-
     __n_iter = 100
 
-    def __get_root_from_segment(self, function, left_border, right_border, precision):
+    def get_root(self, polynome, left_border, right_border, precision):
         n_iter = self.__n_iter
         eps = precision
-        f = function
+        f = polynome.as_function
         x_left, x_right = left_border, right_border
         result = None
 
@@ -24,28 +23,3 @@ class DichotomyStrategy(Strategy):
             result = x_new
 
         return result
-
-    def get_roots(self, polynome, left_border, right_border, precision):
-        result = []
-        f = polynome.as_function
-
-        grid = np.arange(left_border, right_border, precision*1.1)
-        points = list(zip(grid, f(grid)))
-        for i in range(len(points)-1):
-            g = points[i][1] * points[i+1][1]
-            if g < 0:
-                result.append(self.__get_root_from_segment(
-                    function=f,
-                    left_border=points[i][0],
-                    right_border=points[i+1][0],
-                    precision=precision)
-                )
-        return result
-
-
-
-
-
-
-
-
