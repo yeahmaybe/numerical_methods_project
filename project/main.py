@@ -13,16 +13,12 @@ coefs = {
 
 c = {
     0: 1,
-    1: 6,
-    2: -15
+    1: -2
 }
-
-polynome = nls.Polynome(c)
+polynome = nls.Polynome(coefs)
 polynome.print()
-
-f = polynome.as_function
 
 solver = nls.Solver()
 roots = solver.get_roots(polynome=polynome)
-print(roots)
+print("Ответ:", roots)
 

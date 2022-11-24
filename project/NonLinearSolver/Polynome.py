@@ -3,7 +3,7 @@ import decimal as dec
 def power(x, k):
     res = 1
     for i in range(k):
-        res = np.multiply(res, x)
+        res *= x
     return res
 class Polynome:
     __coefficients = {}

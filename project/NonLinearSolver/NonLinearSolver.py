@@ -42,7 +42,7 @@ class Solver(object):
         f = polynome.as_function
         strategy = Strategy()
         if f(left_border) * f(right_border) < 0:
-            strategy = DichotomyStrategy()
+            strategy = ChordStrategy()
         else:
             strategy = NewtonStrategy()
 
@@ -55,7 +55,7 @@ class Solver(object):
         )
         return root
 
-    def get_roots(self, polynome, left_border=-np.inf, right_border=np.inf, precision=10**(-7)):
+    def get_roots(self, polynome, left_border=-np.inf, right_border=np.inf, precision=10 ** (-7)):
         pn = Polynome(polynome.get_coefficients())
         result = []
         firstRound = True
@@ -74,19 +74,17 @@ class Solver(object):
                 firstRound = False
 
             bounds += self.__get_intersections(estimated_bounds, interest)
-            print("Рассматриваемые отрезки:", bounds)
-
+            #print(bounds)
             foundNewRoots = False
             for bound in bounds:
                 if len(pn.get_coefficients(as_list=True)) <= 1:
                     break
                 x_new = self.__assume_root(
-                        polynome=pn,
-                        left_border=bound[0],
-                        right_border=bound[1],
-                        precision=precision
-                    )
-
+                    polynome=pn,
+                    left_border=bound[0],
+                    right_border=bound[1],
+                    precision=precision
+                )
                 new_polynome = pn.extract_root(x_new)
                 if new_polynome is not None:
                     result.append(x_new)
@@ -96,8 +94,12 @@ class Solver(object):
                     pn = new_polynome
                     new_polynome = pn.extract_root(x_new)
 
-                    print("Новый полином:")
-                    pn.print()
+                    #print("Новый полином:")
+                    #pn.print()
 
         result.sort()
-        return list(map(float, result))
+        bounded_result = []
+        for r in result:
+            if left_border < r < right_border:
+                bounded_result.append(r)
+        return list(map(float, bounded_result))
