@@ -1,3 +1,5 @@
+import decimal as dec
+
 from .Polynome import Polynome
 from .BoundEstimator import BoundEstimator
 
@@ -24,7 +26,7 @@ class LagrangeBoundEstimator(BoundEstimator):
         if n == idx:
             return 1
 
-        return 1 + (abs(Cmax) / coefs[n]) ** (1 / (n - idx))
+        return float(1 + (abs(Cmax) / coefs[n]) ** dec.Decimal(1 / (n - idx)))
 
     def get_bounds(self, polynome, precision):
         n = polynome.get_k_max()

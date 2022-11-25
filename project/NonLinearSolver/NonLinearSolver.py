@@ -6,7 +6,6 @@ from .Polynome import Polynome
 from .LagrangeBoundEstimator import LagrangeBoundEstimator
 
 import numpy as np
-import decimal as dec
 
 
 class Solver(object):
@@ -37,7 +36,7 @@ class Solver(object):
 
         return res
 
-    def __assume_root(self, polynome, left_border, right_border, precision):
+    def __assume_root(self, polynome, left_border, right_border, precision=10**(-7)):
 
         f = polynome.as_function
         strategy = Strategy()
@@ -55,7 +54,7 @@ class Solver(object):
         )
         return root
 
-    def get_roots(self, polynome, left_border=-np.inf, right_border=np.inf, precision=10 ** (-7)):
+    def get_roots(self, polynome, left_border=-np.inf, right_border=np.inf, precision=10 ** (-3)):
         pn = Polynome(polynome.get_coefficients())
         result = []
         firstRound = True
@@ -82,8 +81,7 @@ class Solver(object):
                 x_new = self.__assume_root(
                     polynome=pn,
                     left_border=bound[0],
-                    right_border=bound[1],
-                    precision=precision
+                    right_border=bound[1]
                 )
                 new_polynome = pn.extract_root(x_new)
                 if new_polynome is not None:
@@ -99,7 +97,10 @@ class Solver(object):
 
         result.sort()
         bounded_result = []
-        for r in result:
+        for i in range(len(result)):
+            r = result[i]
             if left_border < r < right_border:
-                bounded_result.append(r)
+                if ((i < len(result)-1) and abs(r-result[i+1])) > precision or (i == len(result)-1):
+                    bounded_result.append(r)
+
         return list(map(float, bounded_result))

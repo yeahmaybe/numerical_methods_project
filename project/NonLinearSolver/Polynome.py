@@ -14,7 +14,7 @@ class Polynome:
         self.__coefficients = {}
         for k in c:
             if c[k] != 0:
-               self.__coefficients[k] = c[k]
+               self.__coefficients[k] = dec.Decimal(c[k])
         self.__k_max = max(coefficients)
         # print("Создан полином с коэффициентами:", self.__coefficients)
 
@@ -95,18 +95,19 @@ class Polynome:
         print()
 
     def extract_root(self, x):
+        x = dec.Decimal(x)
         eps = 10e-6
-        c = self.get_coefficients(as_list=True, reversed=True)
+        c = list(map(dec.Decimal, self.get_coefficients(as_list=True, reversed=True)))
+        c_prev = dec.Decimal(0)
 
         res = []
         n = len(c)
-        c_prev = 0
         for i in range(0, n-1):
-            c_new = c[i] + x*c_prev
+            c_new = c[i] + x * c_prev
             res.append(c_new)
             c_prev = c_new
 
-        remnant = c_prev * x + c[-1]
+        remnant = c_prev * x + dec.Decimal(c[-1])
         if abs(remnant) > eps:
             return None
         else:
